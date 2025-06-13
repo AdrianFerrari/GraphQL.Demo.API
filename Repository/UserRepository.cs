@@ -6,47 +6,47 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GraphQL.Demo.API.Repository
 {
-    public class OwnerRepository(IDbContextFactory<ApplicationContext> contextFactory) : IOwnerRepository
+    public class UserRepository(IDbContextFactory<ApplicationContext> contextFactory) : IUserRepository
     {
-        public async Task<IEnumerable<Owner>> GetAllAsync()
+        public async Task<IEnumerable<User>> GetAllAsync()
         {
             using var context = contextFactory.CreateDbContext();
-            return await context.Owners.ToListAsync();
+            return await context.Users.ToListAsync();
         }
-        public async Task<Owner?> GetByIdAsync(Guid id)
+        public async Task<User?> GetByIdAsync(Guid id)
         {
             using var context = contextFactory.CreateDbContext();
-            return await context.Owners.FirstOrDefaultAsync(o => o.Id == id);
+            return await context.Users.FirstOrDefaultAsync(o => o.Id == id);
         }
-        public async Task<Owner> AddAsync(OwnerInput request)
+        public async Task<User> AddAsync(UserInput request)
         {
             using var context = contextFactory.CreateDbContext();
-            var owner = new Owner
+            var owner = new User
             {
                 Id = Guid.NewGuid(),
                 Name = request.Name,
-                Address = request.Address
+                Email = request.Email
             };
-            context.Owners.Add(owner);
+            context.Users.Add(owner);
             await context.SaveChangesAsync();
             return owner;
         }
-        public async Task<Owner> UpdateAsync(Guid id, OwnerInput input)
+        public async Task<User> UpdateAsync(Guid id, UserInput input)
         {
             using var context = contextFactory.CreateDbContext();
-            var dbOwner = await context.Owners.FindAsync(id);
+            var dbOwner = await context.Users.FindAsync(id);
             if (dbOwner == null) throw new InvalidOperationException("Owner not found");
             dbOwner.Name = input.Name ?? dbOwner.Name;
-            dbOwner.Address = input.Address ?? dbOwner.Address;
+            dbOwner.Email = input.Email ?? dbOwner.Email;
             await context.SaveChangesAsync();
             return dbOwner;
         }
         public async Task<bool> DeleteAsync(Guid id)
         {
             using var context = contextFactory.CreateDbContext();
-            var owner = await context.Owners.FindAsync(id);
+            var owner = await context.Users.FindAsync(id);
             if (owner == null) return false;
-            context.Owners.Remove(owner);
+            context.Users.Remove(owner);
             await context.SaveChangesAsync();
             return true;
         }

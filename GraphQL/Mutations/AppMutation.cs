@@ -7,38 +7,38 @@ namespace GraphQL.Demo.API.GraphQL.Mutations
 {
     public class AppMutation : ObjectGraphType
     {
-        public AppMutation(IOwnerRepository ownerRepository, IAccountRepository accountRepository)
+        public AppMutation(IUserRepository userRepository, IAccountRepository accountRepository)
         {
-            Field<OwnerType>("createOwner")
+            Field<UserType>("createUser")
                 .Arguments(new QueryArguments(
-                    new QueryArgument<NonNullGraphType<OwnerInputType>> { Name = "owner" }
+                    new QueryArgument<NonNullGraphType<UserInputType>> { Name = "user" }
                 ))
                 .ResolveAsync(async context =>
                 {
-                    var owner = context.GetArgument<OwnerInput>("owner");
-                    var ownerdb = await ownerRepository.AddAsync(owner);
-                    return ownerdb;
+                    var userInput = context.GetArgument<UserInput>("user");
+                    var userDb = await userRepository.AddAsync(userInput);
+                    return userDb;
                 });
-            Field<OwnerType>("updateOwner")
+            Field<UserType>("updateUser")
                 .Arguments(new QueryArguments(
                     new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "id" },
-                    new QueryArgument<NonNullGraphType<OwnerInputType>> { Name = "owner" }
+                    new QueryArgument<NonNullGraphType<UserInputType>> { Name = "user" }
                 ))
                 .ResolveAsync(async context =>
                 {
-                    var ownerId = context.GetArgument<Guid>("id");
-                    var ownerInput = context.GetArgument<OwnerInput>("owner");
-                    var owner = await ownerRepository.UpdateAsync(ownerId, ownerInput);
-                    return owner;
+                    var userId = context.GetArgument<Guid>("id");
+                    var userInput = context.GetArgument<UserInput>("user");
+                    var user = await userRepository.UpdateAsync(userId, userInput);
+                    return user;
                 });
-            Field<BooleanGraphType>("deleteOwner")
+            Field<BooleanGraphType>("deleteUser")
                 .Arguments(new QueryArguments(
                     new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "id" }
                 ))
                 .ResolveAsync(async context =>
                 {
                     var id = context.GetArgument<Guid>("id");
-                    await ownerRepository.DeleteAsync(id);
+                    await userRepository.DeleteAsync(id);
                     return true;
                 });
             Field<AccountType>("createAccount")
@@ -48,9 +48,9 @@ namespace GraphQL.Demo.API.GraphQL.Mutations
                 ))
                 .ResolveAsync(async context =>
                 {
-                    var ownerId = context.GetArgument<Guid>("id");
+                    var userId = context.GetArgument<Guid>("id");
                     var account = context.GetArgument<AccountInput>("account");
-                    var newAccount = await accountRepository.AddAsync(ownerId, account);
+                    var newAccount = await accountRepository.AddAsync(userId, account);
                     return newAccount;
                 });
             Field<AccountType>("updateAccount")

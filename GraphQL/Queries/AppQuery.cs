@@ -6,27 +6,27 @@ namespace GraphQL.Demo.API.GraphQL.Queries
 {
     public class AppQuery : ObjectGraphType
     {
-        public AppQuery(IOwnerRepository ownerRepository, IAccountRepository accountRepository)
+        public AppQuery(IUserRepository userRepository, IAccountRepository accountRepository)
         {
-            Field<ListGraphType<OwnerType>>("owners")
-               .ResolveAsync(async context => await ownerRepository.GetAllAsync());
-            Field<OwnerType>("owner")
+            Field<ListGraphType<UserType>>("users")
+               .ResolveAsync(async context => await userRepository.GetAllAsync());
+            Field<UserType>("user")
                 .Arguments(new QueryArguments(
                     new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "id" }
                 ))
                 .ResolveAsync(async context =>
                 {
                     var id = context.GetArgument<Guid>("id");
-                    var owner = await ownerRepository.GetByIdAsync(id);
-                    return owner ?? throw new ExecutionError("Owner not found");
+                    var owner = await userRepository.GetByIdAsync(id);
+                    return owner ?? throw new ExecutionError("User not found");
                 });
             Field<ListGraphType<AccountType>>("accounts")
                 .Arguments(new QueryArguments(
-                    new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "ownerId" }
+                    new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "userId" }
                 ))
                 .ResolveAsync(async context =>
                 {
-                    var ownerId = context.GetArgument<Guid>("ownerId");
+                    var ownerId = context.GetArgument<Guid>("userId");
                     return await accountRepository.GetAllByOwnerAsync(ownerId);
                 });
             Field<AccountType>("account")

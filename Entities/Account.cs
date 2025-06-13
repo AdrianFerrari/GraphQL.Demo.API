@@ -10,9 +10,9 @@ namespace GraphQL.Demo.API.Entities
         [Required(ErrorMessage = "Type is required")]
         public TypeOfAccount Type { get; set; }
         public string? Description { get; set; }
-        public Guid OwnerId { get; set; }
+        public Guid UserId { get; set; }
 
-        [ForeignKey(nameof(OwnerId))]
-        public virtual required Owner Owner { get; set; }
+        [ForeignKey(nameof(UserId))]
+        public virtual required User User { get; set; }
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GraphQL.Demo.API.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20250519051553_Initial")]
+    [Migration("20250613132024_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace GraphQL.Demo.API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.5")
+                .HasAnnotation("ProductVersion", "9.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -34,26 +34,27 @@ namespace GraphQL.Demo.API.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("OwnerId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Accounts");
                 });
 
-            modelBuilder.Entity("GraphQL.Demo.API.Entities.Owner", b =>
+            modelBuilder.Entity("GraphQL.Demo.API.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Address")
+                    b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -62,21 +63,21 @@ namespace GraphQL.Demo.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Owners");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("GraphQL.Demo.API.Entities.Account", b =>
                 {
-                    b.HasOne("GraphQL.Demo.API.Entities.Owner", "Owner")
+                    b.HasOne("GraphQL.Demo.API.Entities.User", "User")
                         .WithMany("Accounts")
-                        .HasForeignKey("OwnerId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Owner");
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("GraphQL.Demo.API.Entities.Owner", b =>
+            modelBuilder.Entity("GraphQL.Demo.API.Entities.User", b =>
                 {
                     b.Navigation("Accounts");
                 });

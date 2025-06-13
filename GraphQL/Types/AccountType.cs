@@ -10,8 +10,8 @@ namespace GraphQL.Demo.API.GraphQL.Types
             Field(x => x.Id, type: typeof(IdGraphType)).Description("Id property from the account object.");
             Field<NonNullGraphType<EnumerationGraphType<TypeOfAccount>>>("Type").Description("Type property from the account object.");
             Field(x => x.Description).Description("Description property from the account object.");
-            Field(x => x.OwnerId, type: typeof(IdGraphType)).Description("OwnerId property from the account object.");
-            Field<OwnerType>("owner").Resolve(context => context.Source.Owner).Description("Owner property from the account object.");
+            Field(x => x.UserId, type: typeof(IdGraphType)).Description("UserId property from the account object.");
+            Field<UserType>("user").Resolve(context => context.Source.User).Description("User property from the account object.");
         }
     }
 }
